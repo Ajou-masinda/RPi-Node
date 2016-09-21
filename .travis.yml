@@ -1,11 +1,6 @@
 # .travis.yml 
+sudo: false
 language: node_js
 node_js:
-  - 0.6
-  - 0.7
-branches:
-  only:
-    - master
-matrix:
-  allow_failures:
-    - node_js: 0.7
+  - "4.1"
+  - "4.2"
