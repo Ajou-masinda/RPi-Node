@@ -1,9 +1,9 @@
 {
-    "name": "masinda_tizen"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-        "express": "2.3.11"
-      , "jade": ">= 0.0.1"
-  }
+	"name": "deudnunda",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"express": "~4.0.0",
+		"debug": "~0.7.4"
+	}
 }
