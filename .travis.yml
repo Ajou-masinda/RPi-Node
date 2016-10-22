@@ -14,7 +14,7 @@ install:
   - npm install python-shell
   
 before_script:
-  - bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
+  - sudo bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
 
 script: 
   - node app.js
