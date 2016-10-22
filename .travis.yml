@@ -1,5 +1,20 @@
 # .travis.yml 
-sudo: false
-language: node_js
-node_js:
-  - "6.6"
+language: python
+python:
+  - "2.7"
+env:
+  - NODE_VERSION="6.9.1"
+
+before_install:
+  - nvm install $NODE_VERSION
+  
+install: 
+  - pip install -r requirements.txt
+  - npm install express
+  - npm install python-shell
+  
+before_script:
+  - bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
+
+script: 
+  - node app.js

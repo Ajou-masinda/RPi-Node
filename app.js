@@ -7,28 +7,27 @@ var users = require('./routes/users');
 
 var app = express();
 
-//app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', routes);
 app.post('/', function(req, res) {
 	var chunk = "";
 	req.on('data', function(data) {
+		console.log('JSON from Malhanda : ' + data);
 		chunk = JSON.parse(data);
 	});
 
 	req.on('end', function() {
-		console.log(JSON.stringify(chunk));
-		var py_test = new PythonShell('test2.py',{args : [chunk.message]});
-		py_test.on('message', function(message) {
-			console.log(message);
+		var deudnunda = new PythonShell('test.py',{args : [chunk.message]});
+		
+		deudnunda.on('message', function(message) {
+			console.log('KoNLPy : ' + message);
 		});
-		py_test.end(function (err) {
+		deudnunda.end(function (err) {
 			if (err) throw err;
-			console.log('finished');
+			console.log('--NLP finished--');
 		});
 	});
 });
 app.listen(3030, function() {
-	console.log('server start');
+	console.log('--OPERATE MALHANDA--');
 });
 module.exports = app;
