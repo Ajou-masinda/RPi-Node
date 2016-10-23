@@ -13,15 +13,21 @@ describe('Deudnunda Module Test', function() {
 	
 	describe('splitPythonList method()', function() {
 		it('python list -> javascript object', function () {
-			var testset = [
+			var expect = [
 				{'noun' : '티비','type' : 'NNG'},
 				{'noun' : '켜','type' : 'VV'},
 				{'noun' : '줘','type' : 'EC+VV+EC'}
 			];
+			var actual = deudnunda.splitPythonList('[(티비, NNG), (켜, VV), (줘, EC+VV+EC)]');
+			
+			console.log('expect : ');
+			console.log(expect);
+			console.log('actual : ');
+			console.log(actual);
 			
 			assert.equal(
-					JSON.stringify(testset), 
-					JSON.stringify(deudnunda.splitPythonList('[(티비, NNG), (켜, VV), (줘, EC+VV+EC)]'))
+					JSON.stringify(expect), 
+					JSON.stringify(actual)
 			);
 		});
 	});
