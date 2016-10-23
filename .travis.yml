@@ -10,11 +10,9 @@ before_install:
   
 install: 
   - pip install konlpy
-  - npm install express
-  - npm install python-shell
   
 before_script:
   - sudo curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh
 
 script: 
-  - node app.js
+  - mocha unit_test/deudnunda_test.js

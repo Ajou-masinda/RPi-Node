@@ -6,5 +6,5 @@ from konlpy.utils import pprint
 import sys
 
 mecab = Mecab()
-print(sys.argv[1])
+#print(sys.argv[1])
 pprint(mecab.pos(sys.argv[1].decode("utf-8")))

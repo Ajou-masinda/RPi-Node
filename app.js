@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
-var PythonShell = require('python-shell');
 
+var Deudnunda = require("./deudnunda.js");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -10,21 +10,20 @@ var app = express();
 app.use('/', routes);
 app.post('/', function(req, res) {
 	var chunk = "";
+	var deudnunda = undefined;
+	
 	req.on('data', function(data) {
 		console.log('JSON from Malhanda : ' + data);
 		chunk = JSON.parse(data);
 	});
 
 	req.on('end', function() {
-		var deudnunda = new PythonShell('test.py',{args : [chunk.message]});
-		
-		deudnunda.on('message', function(message) {
-			console.log('KoNLPy : ' + message);
-		});
-		deudnunda.end(function (err) {
-			if (err) throw err;
-			console.log('--NLP finished--');
-		});
+		deudnunda = new Deudnunda('./test.py', chunk.message);
+		deudnunda.run();
+	});
+	
+	req.on('error', (e) => {
+		console.log('problem with request: ' + e.message);
 	});
 });
 app.listen(3030, function() {
