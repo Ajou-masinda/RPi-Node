@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from konlpy.tag import Mecab
-from konlpy.utils import pprint
+from UnicodePrinter import UnicodePrinter
 import sys
+import re
 
 mecab = Mecab()
-#print(sys.argv[1])
-pprint(mecab.pos(sys.argv[1].decode("utf-8")))
+
+result = UnicodePrinter().pformat(mecab.pos(sys.argv[1].decode('utf-8')))
+print re.sub(r"\n", "", result)
