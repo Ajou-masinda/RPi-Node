@@ -18,7 +18,7 @@ app.post('/', function(req, res) {
 	});
 
 	req.on('end', function() {
-		deudnunda = new Deudnunda('./test.py', chunk.message);
+		deudnunda = new Deudnunda('./malhandaNLP.py', chunk.message);
 		deudnunda.run();
 	});
 	

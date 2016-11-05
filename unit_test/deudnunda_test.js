@@ -1,34 +1,91 @@
 var assert = require("assert");
+var Deudnunda = require("../deudnunda.js");
 
-describe('Deudnunda Module Test', function() {
-	var Deudnunda = require("../deudnunda.js");
-	var deudnunda;
+var test = function(iter, test_set) {
+	this.test_set = test_set;
+	this.iter_cnt = parseInt(iter) - 1;
 	
-	describe('Deudnunda', function() {
-		it('Run deudnunda module', function() {
-			deudnunda = new Deudnunda('../test.py', '티비 켜줘');
-			deudnunda.run();
+	this.run = function() {
+		var self = this;
+		describe('TEST' + iter, function() {
+			it('CASE : ' + self.test_set, function(done) {
+				var deudnunda = new Deudnunda('/malhandaNLP.py', self.test_set);
+				
+				deudnunda.py_nlp.on('message', function(message) {
+					deudnunda.nlp_reslut = message;
+				});
+
+				deudnunda.py_nlp.end(function (err) {
+					if (err) throw err;
+					console.log('KoNLPy result : ' + deudnunda.nlp_reslut);
+					
+					describe('Method test :: ', function() {
+						test_splitPythonList(deudnunda);
+						test_getKeyMorpheme(deudnunda);
+						test_makeCommand(deudnunda);
+					});
+					
+					done();
+				});
+			});
 		});
-	});
+	};
 	
-	describe('splitPythonList method()', function() {
-		it('python list -> javascript object', function () {
+	var test_splitPythonList = function(deudnunda) {
+		it('splitPythonList() method', function() {
 			var expect = [
-				{'noun' : '티비','type' : 'NNG'},
-				{'noun' : '켜','type' : 'VV'},
-				{'noun' : '줘','type' : 'EC+VV+EC'}
+			[ {"morpheme" : "티비","type" : "NNG"}, {"morpheme" : "켜","type" : "VV"},{"morpheme" : "줘","type" : "EC+VV+EC"} ],
+			
+			[ {"morpheme" : "전등","type" : "NNG"}, {"morpheme" : "꺼주","type" : "VV"},{"morpheme" : "지","type" : "EC"},
+			 {"morpheme" : "않","type" : "VX"}, {"morpheme" : "겠","type" : "EP"},{"morpheme" : "니","type" : "EC"} ],
+			 
+			[ {"morpheme" : "에어컨","type" : "NNG"}, {"morpheme" : "온도","type" : "NNG"},{"morpheme" : "낮춰","type" : "VV+EC"},
+			 {"morpheme" : "줘","type" : "VX+EC"} ]
 			];
-			var actual = deudnunda.splitPythonList('[(티비, NNG), (켜, VV), (줘, EC+VV+EC)]');
 			
-			console.log('expect : ');
-			console.log(expect);
-			console.log('actual : ');
-			console.log(actual);
-			
-			assert.equal(
-					JSON.stringify(expect), 
-					JSON.stringify(actual)
-			);
+			var actual = deudnunda.splitPythonList();
+			do_assert(actual, expect);
 		});
-	});
-});
+	};
+	
+	var test_getKeyMorpheme = function(deudnunda) {
+		it('getKeyMorpheme() method', function() {
+			var expect = [
+			{"noun" : ["티비"],"verb" : "켜"},
+			{"noun" : ["전등"],"verb" : "꺼주"},
+			{"noun" : ["에어컨", "온도"],"verb" : "낮춰"}
+			];
+			
+			var actual = deudnunda.getKeyMorpheme(deudnunda.splitPythonList());
+			do_assert(actual, expect);
+		});
+	};
+	
+	var test_makeCommand = function(deudnunda) {
+		it('makeCommand() method', function() {
+			var expect = [
+			{"target" : "티비","operation" : "ON"},
+			{"target" : "전등","operation" : "OFF"},
+			{"target" : "에어컨","operation" : "DOWN"}
+			];
+			
+			var key_mor = deudnunda.getKeyMorpheme(deudnunda.splitPythonList());
+			var actual = deudnunda.makeCommand(key_mor);
+			do_assert(actual, expect);
+		});
+	};
+	
+	var do_assert = function(actual, expect) {
+		console.log(expect[iter - 1]);
+		assert.equal(
+				JSON.stringify(expect[iter - 1]), 
+				JSON.stringify(actual)
+		);
+	};
+};
+
+var test_set = ["티비 켜줘", "전등 꺼주지 않겠니", "에어컨 온도 낮춰줘"];
+for(var i in test_set) {
+	var t = new test(parseInt(i) + 1, test_set[i]);
+	t.run();
+}
