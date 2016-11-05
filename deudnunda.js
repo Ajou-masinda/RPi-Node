@@ -30,16 +30,16 @@ Deudnunda.prototype = {
 			console.log('--NLP finished--');
 			
 			var key_morpheme = self.getKeyMorpheme(self.parse_nlp);
-			var command = makeCommand(key_morpheme);
+			var command = self.makeCommand(key_morpheme);
+			
+			console.log(command);
 		});
 	},
 		
 	/**
 	 * Python list -> Javascript object
 	 */
-	//splitPythonList : function(python_list_str) {
 	splitPythonList : function() {
-		//var objs = python_list_str.split('), ');
 		var objs = (this.nlp_reslut).split('), ');
 		var result = [];
 		

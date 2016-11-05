@@ -14,7 +14,7 @@ install:
   - npm install
   
 before_script:
-  - sudo curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh
+  - bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
 
 script: 
   - mocha unit_test/deudnunda_test.js
