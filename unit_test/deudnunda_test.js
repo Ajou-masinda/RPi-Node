@@ -17,7 +17,7 @@ var test = function(iter, test_set) {
 
 				deudnunda.py_nlp.end(function (err) {
 					if (err) throw err;
-					console.log('KoNLPy result : ' + deudnunda.nlp_reslut);
+					//console.log('KoNLPy result : ' + deudnunda.nlp_reslut);
 					
 					describe('Method test :: ', function() {
 						test_splitPythonList(deudnunda);
@@ -76,7 +76,7 @@ var test = function(iter, test_set) {
 	};
 	
 	var do_assert = function(actual, expect) {
-		console.log(expect[iter - 1]);
+		//console.log(expect[iter - 1]);
 		assert.equal(
 				JSON.stringify(expect[iter - 1]), 
 				JSON.stringify(actual)
