@@ -59,10 +59,12 @@ Deudnunda.prototype = {
 		var verb = "";
 		
 		for(var i in parse_nlp) {
-			if(parse_nlp[i].type == 'NNG') {
+			//if(parse_nlp[i].type == 'NNG') {
+			if(parse_nlp[i].type == 'Noun') {
 				target.push(parse_nlp[i].morpheme);
 			}
-			else if(parse_nlp[i].type.indexOf('VV') >= 0 && verb === "") {
+			//else if(parse_nlp[i].type.indexOf('VV') >= 0 && verb === "") {
+			else if(parse_nlp[i].type.indexOf('Verb') >= 0 && verb === "") {
 				verb = parse_nlp[i].morpheme;
 			}
 		}

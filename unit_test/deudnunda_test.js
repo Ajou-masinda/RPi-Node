@@ -8,7 +8,7 @@ var test = function(iter, test_set) {
 	this.run = function() {
 		var self = this;
 		describe('TEST' + iter, function() {
-			it('CASE :', function(done) {
+			it('CASE : ' + self.test_set, function(done) {
 				var deudnunda = new Deudnunda('/malhandaNLP.py', self.test_set);
 				
 				deudnunda.py_nlp.on('message', function(message) {
@@ -17,7 +17,7 @@ var test = function(iter, test_set) {
 
 				deudnunda.py_nlp.end(function (err) {
 					if (err) throw err;
-					//console.log('KoNLPy result : ' + deudnunda.nlp_reslut);
+					console.log('KoNLPy result : ' + deudnunda.nlp_reslut);
 					
 					describe('Method test :: ', function() {
 						test_splitPythonList(deudnunda);
@@ -27,12 +27,14 @@ var test = function(iter, test_set) {
 					
 					done();
 				});
-			});
+			}).timeout(5000);
 		});
 	};
 	
 	var test_splitPythonList = function(deudnunda) {
 		it('splitPythonList() method', function() {
+			/*
+			// Mecab result
 			var expect = [
 			[ {"morpheme" : "티비","type" : "NNG"}, {"morpheme" : "켜","type" : "VV"},{"morpheme" : "줘","type" : "EC+VV+EC"} ],
 			
@@ -42,6 +44,16 @@ var test = function(iter, test_set) {
 			[ {"morpheme" : "에어컨","type" : "NNG"}, {"morpheme" : "온도","type" : "NNG"},{"morpheme" : "낮춰","type" : "VV+EC"},
 			 {"morpheme" : "줘","type" : "VX+EC"} ]
 			];
+			*/
+			
+			// Twitter result
+			var expect = [
+  			[ {"morpheme" : "티비","type" : "Noun"}, {"morpheme" : "켜","type" : "Verb"},{"morpheme" : "줘","type" : "Eomi"} ],
+  			
+  			[ {"morpheme":"전등","type":"Noun"},{"morpheme":"꺼","type":"Verb"},{"morpheme":"주","type":"PreEomi"},{"morpheme":"지","type":"Eomi"},{"morpheme":"않겠","type":"Verb"},{"morpheme":"니","type":"Eomi"} ],
+  			 
+  			[ {"morpheme":"에어컨","type":"Noun"},{"morpheme":"온도","type":"Noun"},{"morpheme":"낮춰","type":"Verb"},{"morpheme":"줘","type":"Eomi"} ]
+  			];
 			
 			var actual = deudnunda.splitPythonList();
 			do_assert(actual, expect);
@@ -50,10 +62,18 @@ var test = function(iter, test_set) {
 	
 	var test_getKeyMorpheme = function(deudnunda) {
 		it('getKeyMorpheme() method', function() {
-			var expect = [
+			
+			// Mecab result
+			/*var expect = [
 			{"noun" : ["티비"],"verb" : "켜"},
 			{"noun" : ["전등"],"verb" : "꺼주"},
 			{"noun" : ["에어컨", "온도"],"verb" : "낮춰"}
+			];*/
+			
+			var expect = [
+			{"noun" : ["티비"],"verb" : "켜"},
+			{"noun" : ["전등"],"verb" : "꺼"},
+			{"noun" : ["에어컨", "온도"],"verb" : "낮춰"}           
 			];
 			
 			var actual = deudnunda.getKeyMorpheme(deudnunda.splitPythonList());
@@ -76,7 +96,7 @@ var test = function(iter, test_set) {
 	};
 	
 	var do_assert = function(actual, expect) {
-		//console.log(expect[iter - 1]);
+		console.log(expect[iter - 1]);
 		assert.equal(
 				JSON.stringify(expect[iter - 1]), 
 				JSON.stringify(actual)
