@@ -8,7 +8,7 @@ var test = function(iter, test_set) {
 	this.run = function() {
 		var self = this;
 		describe('TEST' + iter, function() {
-			it('CASE : ' + self.test_set, function(done) {
+			it('CASE :', function(done) {
 				var deudnunda = new Deudnunda('/malhandaNLP.py', self.test_set);
 				
 				deudnunda.py_nlp.on('message', function(message) {
