@@ -23,4 +23,18 @@ apt-get으로 설치하는 것보다 NVM(Node Version Manager)를 사용해 설�
 	
 #### npm 설치
 	$ sudo apt-get install npm
+
+#### mocha 설치
+	$ npm install mocha -g
+
+## KoNLPy
+	$ sudo apt-get install python-dev
+	$ sudo pip install konlpy         # Python 2.x
 	
+# Run ***'듣는다'*** server
+	$ git clone https://github.com/Ajou-masinda/RPi-Node.git
+	$ cd RPi-Node
+	$ node app.js
+	
+# Run unit test
+	$ mocha unit_test/deudnunda_test.js
