@@ -12,9 +12,10 @@ before_install:
 install: 
   - pip install konlpy
   - npm install
-  
-before_script:
-  - sudo curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh | sudo bash
+
+#install Mecab package  
+#before_script:
+#  - sudo curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh | sudo bash
 
 script: 
   - mocha unit_test/deudnunda_test.js
