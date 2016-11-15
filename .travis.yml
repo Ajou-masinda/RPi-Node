@@ -19,3 +19,4 @@ install:
 
 script: 
   - mocha unit_test/deudnunda_test.js
+  - mocha unit_test/sensormanager_test.js

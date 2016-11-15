@@ -18,7 +18,7 @@ app.post('/', function(req, res) {
 	});
 
 	req.on('end', function() {
-		deudnunda = new Deudnunda('./malhandaNLP.py', chunk.message);
+		deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.message);
 		deudnunda.run();
 	});
 	
@@ -29,4 +29,9 @@ app.post('/', function(req, res) {
 app.listen(3030, function() {
 	console.log('--OPERATE MALHANDA--');
 });
+
+var SensorManager = require("./sensorManager.js");
+var sensor_manager = new SensorManager();
+sensor_manager.run();
+
 module.exports = app;
