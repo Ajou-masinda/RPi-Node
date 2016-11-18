@@ -20,7 +20,7 @@ SensorManager.prototype = {
 			var mq = JSON.parse(buf.toString());
 			
 			if(self.isWarning(mq)) {
-				self.sendNotification();
+				//self.sendNotification(mq);
 			}
 		});
 		
@@ -46,8 +46,32 @@ SensorManager.prototype = {
 	/**
 	 * Send warning notificaiton to Android
 	 */
-	sendNotification : function() {
+	sendNotification : function(mq) {
 		// Android Notification Code
+		var FCM = require('fcm-node');
+
+		var serverKey = ''; // 발급된 FCM API key 등록
+		var fcm = new FCM(serverKey);
+
+		var message = { 
+		    to: 'registration_token', // Android token 등록
+		    collapse_key: 'your_collapse_key', // Android key(?) 등록
+		    
+		    notification: {
+		        title: 'DEUDNUNDA WARNING', 
+		        body: 'GAS VALUE' 
+		    },
+		    
+		    data: mq // 따로 데이터 보낼게 있으면 이거로
+		};
+
+		fcm.send(message, function(err, response){
+		    if (err) {
+		        console.log("FCM error");
+		    } else {
+		        console.log("FCM is successfully sent with response: ", response);
+		    }
+		});
 	}
 }
 

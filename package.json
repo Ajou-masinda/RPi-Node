@@ -5,7 +5,7 @@
 	"dependencies": {
 		"express": "~4.0.0",
 		"python-shell": "~0.4.0",
-		"mocha": "~3.1.2",
+		"fcm-node": "~1.0.15",
 		"debug": "~0.7.4"
 	}
 }
