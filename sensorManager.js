@@ -20,6 +20,7 @@ SensorManager.prototype = {
 			var mq = JSON.parse(buf.toString());
 			
 			if(self.isWarning(mq)) {
+				console.log('WARNING!');
 				//self.sendNotification(mq);
 			}
 		});

@@ -6,11 +6,13 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+var deudnunda = undefined;
+var cmd = {};
 
 app.use('/', routes);
-app.post('/', function(req, res) {
+app.post('/malhanda', function(req, res) {
 	var chunk = "";
-	var deudnunda = undefined;
+	//var deudnunda = undefined;
 	
 	req.on('data', function(data) {
 		console.log('JSON from Malhanda : ' + data);
@@ -26,6 +28,38 @@ app.post('/', function(req, res) {
 		console.log('problem with request: ' + e.message);
 	});
 });
+
+app.post('/ggopnunda', function(req, res) {
+	var chunk = "";
+	
+	req.on('data', function(data) {
+		//console.log('JSON from GGopnunda : ' + data);
+		chunk = JSON.parse(data);
+	});
+
+	req.on('end', function() {
+		var req = chunk.REQ;
+		
+		if(typeof deudnunda != 'undefined') {
+			if(req == 'GET_COMMAND') {
+				if(deudnunda.command.operation == 'ON' || deudnunda.command.operation == 'OFF') {
+					res.send(deudnunda.command.operation + '\r');
+					console.log('Command to GGopnunda - TARGET : ' + deudnunda.command.target + " ACTION : " + deudnunda.command.operation);
+				}
+				
+				deudnunda.command = {};
+			}
+			else {
+				res.send('\r');			
+			}
+		}
+	});
+	
+	req.on('error', (e) => {
+		console.log('problem with request: ' + e.message);
+	});
+});
+
 app.listen(3030, function() {
 	console.log('--OPERATE MALHANDA--');
 });

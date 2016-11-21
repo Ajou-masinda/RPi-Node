@@ -7,6 +7,7 @@ var Deudnunda = function(py_script, stt) {
 	var PythonShell = require('python-shell');
 	this.py_nlp = new PythonShell(py_script, {args : [stt]});
 	this.nlp_reslut = undefined;
+	this.command = {};
 }
  
 Deudnunda.prototype = {
@@ -31,11 +32,11 @@ Deudnunda.prototype = {
 			
 			var key_morpheme = self.getKeyMorpheme(self.parse_nlp);
 			var command = self.makeCommand(key_morpheme);
-			
 			console.log(command);
+			self.command = command;
 		});
 	},
-		
+	
 	/**
 	 * Python list -> Javascript object
 	 */
@@ -94,7 +95,13 @@ Deudnunda.prototype = {
 		// else
 		target = key_morpheme.noun[0];
 		
-		return {"target" : target, "operation" : operation};
+		
+		if(typeof target == 'undefined' || operation == 'undefined') {
+			return {"target" : "error", "operation" : "error"};
+		}
+		else {
+			return {"target" : target, "operation" : operation};
+		}
 	}
 }
 
