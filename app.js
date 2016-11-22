@@ -2,12 +2,16 @@ var express = require('express');
 var path = require('path');
 
 var Deudnunda = require("./deudnunda.js");
+var DBManager = require("./dbManager.js");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
 var deudnunda = undefined;
 var cmd = {};
+
+var db = new DBManager();
+var model = db.createDBModel("test", {"test" : String});
 
 app.use('/', routes);
 app.post('/malhanda', function(req, res) {
@@ -33,7 +37,7 @@ app.post('/ggopnunda', function(req, res) {
 	var chunk = "";
 	
 	req.on('data', function(data) {
-		//console.log('JSON from GGopnunda : ' + data);
+		console.log('JSON from GGopnunda : ' + data);
 		chunk = JSON.parse(data);
 	});
 
