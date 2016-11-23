@@ -25,7 +25,7 @@ apt-get으로 설치하는 것보다 NVM(Node Version Manager)를 사용해 설�
 	$ sudo apt-get install npm
 
 #### mocha 설치
-	$ npm install mocha -g
+	$ sudo npm install mocha -g
 
 ## KoNLPy
 	$ sudo apt-get install python-dev
