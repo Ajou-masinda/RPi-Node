@@ -17,6 +17,14 @@ DBManager.prototype = {
 		var Schema = mongoose.Schema(schema);
 		var Model = mongoose.model(name, Schema);
 		return Model;
+	},
+	
+	addInstance : function(Model, instance) {
+		var new_ins = new Model(instance);
+		
+		new_ins.save(function(err){
+			if(err) console.log('Mongoose : addInstance Error');
+		});
 	}
 }
 

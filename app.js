@@ -1,8 +1,11 @@
 var express = require('express');
 var path = require('path');
 
-var Deudnunda = require("./deudnunda.js");
 var DBManager = require("./dbManager.js");
+
+var Deudnunda = require("./deudnunda.js");
+var GGopnunda = require("./ggopnunda.js");
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -11,7 +14,17 @@ var deudnunda = undefined;
 var cmd = {};
 
 var db = new DBManager();
-var model = db.createDBModel("test", {"test" : String});
+var ggopnunda = new GGopnunda(db);
+
+var test = {
+	name : "test",
+	locate : "room",
+	type : false,
+	MAC : "AA:AA:AA:AA:AA:AA",
+	IP : "1.1.1.2"
+};
+
+ggopnunda.createDB();
 
 app.use('/', routes);
 app.post('/malhanda', function(req, res) {
@@ -24,8 +37,15 @@ app.post('/malhanda', function(req, res) {
 	});
 
 	req.on('end', function() {
-		deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.message);
-		deudnunda.run();
+		if(typeof chunk.message !== 'undefined') {
+			deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.message);
+			deudnunda.run();
+		}
+		else if(typeof chunk.plug !== 'undefined') {
+			if(chunk.plug == 'GET') {
+				ggopnunda.getPlugList(res);
+			}
+		}
 	});
 	
 	req.on('error', (e) => {
