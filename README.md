@@ -30,6 +30,10 @@ apt-get으로 설치하는 것보다 NVM(Node Version Manager)를 사용해 설�
 ## KoNLPy
 	$ sudo apt-get install python-dev
 	$ sudo pip install konlpy         # Python 2.x
+
+pip가 설치되어 있지 않다면
+
+	$ sudo apt-get install python-pip
 	
 ## MongoDB
 	$ sudo apt-get install mongodb
