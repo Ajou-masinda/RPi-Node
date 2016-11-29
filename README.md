@@ -9,6 +9,10 @@ Project_malhanda의 Raspberry Pi 모듈 ***'듣는다'***의 Node 서버단 Repo
 * KoNLPy : 한국어 형태소 분석 Python package
 
 # Installation
+
+## RPi to AP
+https://github.com/Ajou-masinda/RPi-Node/wiki/Set-up-a-Raspberry-Pi-to-AP
+
 ## Node.js
 apt-get으로 설치하는 것보다 NVM(Node Version Manager)를 사용해 설치하는 것이 더 안정적
 
