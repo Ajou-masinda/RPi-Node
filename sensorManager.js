@@ -47,17 +47,15 @@ SensorManager.prototype = {
 	/**
 	 * Send warning notificaiton to Android
 	 */
-	sendNotification : function(mq) {
+	sendNotification : function(mq, res) {
 		// Android Notification Code
 		var FCM = require('fcm-node');
 
-		var serverKey = ''; // 발급된 FCM API key 등록
+		var serverKey = 'AIzaSyDimfiWLyrCV2GqbbftaGkl6e_tvLo2QOw'; // 발급된 server key 등록
 		var fcm = new FCM(serverKey);
 
 		var message = { 
-		    to: 'registration_token', // Android token 등록
-		    collapse_key: 'your_collapse_key', // Android key(?) 등록
-		    
+		    to: 'fA0YqQN_fck:APA91bFgiNeeqc7bgK6RPeIU-x8L0f9U-l-W0ufr1TENXVUuCJMQHbVjJL0ZXgwSub5AaJJ4uF2cJigyEFHDGbamRT2YXEGYyTlDxudQkGAy9sKR_i6jnTBIEwsD-QIu_tJbOjN0XDKG',
 		    notification: {
 		        title: 'DEUDNUNDA WARNING', 
 		        body: 'GAS VALUE' 
@@ -67,10 +65,13 @@ SensorManager.prototype = {
 		};
 
 		fcm.send(message, function(err, response){
+			console.log(message);
 		    if (err) {
 		        console.log("FCM error");
+				res.send('err\r');
 		    } else {
 		        console.log("FCM is successfully sent with response: ", response);
+				res.send('success\r');
 		    }
 		});
 	}

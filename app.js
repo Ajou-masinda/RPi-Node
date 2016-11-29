@@ -9,20 +9,15 @@ var GGopnunda = require("./ggopnunda.js");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var SensorManager = require("./sensorManager.js");
+var sensor_manager = new SensorManager();
+
 var app = express();
 var deudnunda = undefined;
 var cmd = {};
 
 var db = new DBManager();
 var ggopnunda = new GGopnunda(db);
-
-var test = {
-	name : "test",
-	locate : "room",
-	type : false,
-	MAC : "AA:AA:AA:AA:AA:AA",
-	IP : "1.1.1.2"
-};
 
 ggopnunda.createDB();
 
@@ -45,6 +40,9 @@ app.post('/malhanda', function(req, res) {
 			if(chunk.plug == 'GET') {
 				ggopnunda.getPlugList(res);
 			}
+		}
+		else if(typeof chunk.test !== 'undefined') {
+			sensor_manager.sendNotification({mq:1}, res);
 		}
 	});
 	
@@ -73,6 +71,12 @@ app.post('/ggopnunda', function(req, res) {
 				
 				deudnunda.command = {};
 			}
+			else if(req == 'FIND_AP') {
+				var new_plug = ggopnunda.makeInstance(chunk.mac);
+				ggopnunda.addPlug(new_plug);
+				
+				//res.send("" + '\r'); AP 정보 전송
+			}
 			else {
 				res.send('\r');			
 			}
@@ -88,8 +92,6 @@ app.listen(3030, function() {
 	console.log('--OPERATE MALHANDA--');
 });
 
-var SensorManager = require("./sensorManager.js");
-var sensor_manager = new SensorManager();
 sensor_manager.run();
 
 module.exports = app;
