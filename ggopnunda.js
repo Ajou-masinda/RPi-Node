@@ -26,6 +26,12 @@ GGopnunda.prototype = {
 		"lastreq" : Date
 	},
 	
+	commandSchema : {
+		"command" : String,
+		"target" : String,
+		"time" : Date
+	},
+	
 	makeInstance : function(mac, ip, serial) {
 		var instance = {
 			name : "",

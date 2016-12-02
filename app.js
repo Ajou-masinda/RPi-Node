@@ -24,7 +24,6 @@ ggopnunda.createDB();
 app.use('/', routes);
 app.post('/malhanda', function(req, res) {
 	var chunk = "";
-	//var deudnunda = undefined;
 	
 	req.on('data', function(data) {
 		console.log('JSON from Malhanda : ' + data);
@@ -32,21 +31,23 @@ app.post('/malhanda', function(req, res) {
 	});
 
 	req.on('end', function() {
-		if(typeof chunk.message !== 'undefined') {
-			deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.message);
+		var req = chunk.REQ;
+		
+		if(req == 'COMMAND') {
+			deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.MSG);
 			deudnunda.run();
 		}
-		else if(typeof chunk.plug !== 'undefined') {
-			if(chunk.plug == 'GET') {
+		else if(req == 'GET') {
+			if(chunk.MSG == 'list') {
 				ggopnunda.getPlugList(res);
 			}
-			else if(chunk.plug == 'COMMAND') {
-				
-			}
 		}
-		else if(typeof chunk.test !== 'undefined') {
+		else if(req == 'SET') {
+			
+		}
+		/*else if(typeof chunk.test !== 'undefined') {
 			sensor_manager.sendNotification({mq:1}, res);
-		}
+		}*/
 		/*else if(typeof chunk.AIRCON !== 'undefined') {
 			var exec = require('child_process').exec;
 			var child = exec('python ./python_sources/ir.py --device LG_AIR --command OFF',
@@ -74,12 +75,11 @@ app.post('/ggopnunda', function(req, res) {
 		var req = chunk.REQ;
 		
 		if(req == 'GET_COMMAND') {
-			// command 요청이 있으면 req DB에 해당 serial의 time을 업데이트
 			var serial = chunk.SERIAL;
 			
 			ggopnunda.refreshPlug(serial);
 			
-			if(0) { // 요청 결과 만약 해당 serial에 대해 command가 존재한다면
+			if(0) { // 요청 결과 만약 해당 name을 가진 serial에 대해 command가 존재한다면
 				// 아래 코드 실행
 				if(deudnunda.command.operation == 'ON' || deudnunda.command.operation == 'OFF') {
 					res.send(deudnunda.command.operation + '\r');
@@ -110,8 +110,6 @@ app.listen(3030, function() {
 	console.log('--OPERATE MALHANDA--');
 });
 
-//주기적으로 command req들의 timestamp를 체크해서 
-// timestamp가 오래된 plug의 detect를 false로 바꿔주자
 setInterval(function() {
 	ggopnunda.detectPlug();
 }, 2000);
