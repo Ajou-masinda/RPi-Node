@@ -40,6 +40,9 @@ app.post('/malhanda', function(req, res) {
 			if(chunk.plug == 'GET') {
 				ggopnunda.getPlugList(res);
 			}
+			else if(chunk.plug == 'COMMAND') {
+				
+			}
 		}
 		else if(typeof chunk.test !== 'undefined') {
 			sensor_manager.sendNotification({mq:1}, res);
@@ -70,28 +73,32 @@ app.post('/ggopnunda', function(req, res) {
 	req.on('end', function() {
 		var req = chunk.REQ;
 		
-		//if(typeof deudnunda != 'undefined') {
-			if(req == 'GET_COMMAND') {
+		if(req == 'GET_COMMAND') {
+			// command 요청이 있으면 req DB에 해당 serial의 time을 업데이트
+			var serial = chunk.SERIAL;
+			
+			ggopnunda.refreshPlug(serial);
+			
+			if(0) { // 요청 결과 만약 해당 serial에 대해 command가 존재한다면
+				// 아래 코드 실행
 				if(deudnunda.command.operation == 'ON' || deudnunda.command.operation == 'OFF') {
 					res.send(deudnunda.command.operation + '\r');
 					console.log('Command to GGopnunda - TARGET : ' + deudnunda.command.target + " ACTION : " + deudnunda.command.operation);
 				}
-				
-				deudnunda.command = {};
 			}
-			else if(req == 'REGISTER') {
-				var new_plug = ggopnunda.makeInstance(chunk.MAC, chunk.IP);
-				ggopnunda.checkPlugStatus(new_plug);
-				
-				console.log(chunk.MAC);
-				console.log(chunk.IP);
-				
-				res.send("OK" + '\r');
-			}
-			else {
-				res.send('\r');			
-			}
-		//}
+		}
+		else if(req == 'REGISTER') {
+			var new_plug = ggopnunda.makeInstance(chunk.MAC, chunk.IP, chunk.SERIAL);
+			ggopnunda.registerPlug(new_plug);
+			
+			console.log(chunk.MAC);
+			console.log(chunk.IP);
+			
+			res.send("OK" + '\r');
+		}
+		else {
+			res.send('\r');
+		}
 	});
 	
 	req.on('error', (e) => {
@@ -102,6 +109,12 @@ app.post('/ggopnunda', function(req, res) {
 app.listen(3030, function() {
 	console.log('--OPERATE MALHANDA--');
 });
+
+//주기적으로 command req들의 timestamp를 체크해서 
+// timestamp가 오래된 plug의 detect를 false로 바꿔주자
+setInterval(function() {
+	ggopnunda.detectPlug();
+}, 2000);
 
 sensor_manager.run();
 
