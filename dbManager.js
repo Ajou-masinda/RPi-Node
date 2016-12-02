@@ -25,6 +25,12 @@ DBManager.prototype = {
 		new_ins.save(function(err){
 			if(err) console.log('Mongoose : addInstance Error');
 		});
+	},
+
+	updateInstance : function(Model, instance, target) {
+		Model.findOneAndUpdate(target, instance, function(err){
+			if(err) console.log('Mongoose : updateInstance Error');
+		});
 	}
 }
 

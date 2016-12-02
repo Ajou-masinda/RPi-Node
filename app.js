@@ -44,6 +44,14 @@ app.post('/malhanda', function(req, res) {
 		else if(typeof chunk.test !== 'undefined') {
 			sensor_manager.sendNotification({mq:1}, res);
 		}
+		/*else if(typeof chunk.AIRCON !== 'undefined') {
+			var exec = require('child_process').exec;
+			var child = exec('python ./python_sources/ir.py --device LG_AIR --command OFF',
+				function (error, stdout, stderr) {
+					console.log('stdout: ' + stdout);
+				}
+			);
+		}*/
 	});
 	
 	req.on('error', (e) => {
@@ -62,7 +70,7 @@ app.post('/ggopnunda', function(req, res) {
 	req.on('end', function() {
 		var req = chunk.REQ;
 		
-		if(typeof deudnunda != 'undefined') {
+		//if(typeof deudnunda != 'undefined') {
 			if(req == 'GET_COMMAND') {
 				if(deudnunda.command.operation == 'ON' || deudnunda.command.operation == 'OFF') {
 					res.send(deudnunda.command.operation + '\r');
@@ -71,16 +79,19 @@ app.post('/ggopnunda', function(req, res) {
 				
 				deudnunda.command = {};
 			}
-			else if(req == 'FIND_AP') {
-				var new_plug = ggopnunda.makeInstance(chunk.mac);
-				ggopnunda.addPlug(new_plug);
+			else if(req == 'REGISTER') {
+				var new_plug = ggopnunda.makeInstance(chunk.MAC, chunk.IP);
+				ggopnunda.checkPlugStatus(new_plug);
 				
-				//res.send("" + '\r'); AP 정보 전송
+				console.log(chunk.MAC);
+				console.log(chunk.IP);
+				
+				res.send("OK" + '\r');
 			}
 			else {
 				res.send('\r');			
 			}
-		}
+		//}
 	});
 	
 	req.on('error', (e) => {

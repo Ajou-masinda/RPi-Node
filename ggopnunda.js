@@ -12,15 +12,45 @@ GGopnunda.prototype = {
 		"locate" : String,
 		"type" : Boolean,
 		"MAC" : String,
-		"IP" : String
+		"IP" : String,
+		"status" : Boolean
+	},
+	
+	makeInstance : function(mac, ip) {
+		var instance = {
+			name : "",
+			locate : "",
+			type : 0,
+			MAC : mac,
+			IP : ""
+		};
+		return instance;
 	},
 	
 	createDB : function() {
 		this.db_model = this.db.createDBModel('GGopnunda', this.DBschema);
 	},
 	
-	addPlug : function(plug) {
-		this.db.addInstance(this.db_model, plug);
+	checkPlugStatus : function(plug) {
+		var db = this.db;
+		var db_model = this.db_model;
+		var query = db_model.find({mac:plug.mac});
+		query.exec(function(err, result) {
+			if(result.length > 0) {
+				console.log('Plug reconnected');
+				db.updateInstance(db_model, plug, result);
+			}
+			else {
+				console.log('add plug instance');
+				db.addInstance(db_model, plug);
+			}
+		});
+		
+		//this.db.addInstance(this.db_model, plug);
+	},
+
+	addPlug : function(mac, ip) {
+		
 	},
 	
 	removePlug : function(plug) {
