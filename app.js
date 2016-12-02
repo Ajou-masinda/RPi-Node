@@ -19,6 +19,12 @@ var cmd = {};
 var db = new DBManager();
 var ggopnunda = new GGopnunda(db);
 
+var commandSchema = {
+	"command" : { target : String, operation : String },
+	"target_serial" : String,
+	"time" : Date
+};
+var command_db_model = db.createDBModel('Command', commandSchema);
 ggopnunda.createDB();
 
 app.use('/', routes);
@@ -35,15 +41,20 @@ app.post('/malhanda', function(req, res) {
 		
 		if(req == 'COMMAND') {
 			deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.MSG);
-			deudnunda.run();
+			deudnunda.run(db, ggopnunda, command_db_model);
 		}
 		else if(req == 'GET') {
-			if(chunk.MSG == 'list') {
+			if(chunk.MSG == 'LIST') {
 				ggopnunda.getPlugList(res);
 			}
 		}
 		else if(req == 'SET') {
-			
+			if(chunk.ACTION == "MODIFY") {
+				ggopnunda.updatePlug(chunk.MSG);
+			}
+			else if(chunk.action == "DELETE") {
+				
+			}
 		}
 		/*else if(typeof chunk.test !== 'undefined') {
 			sensor_manager.sendNotification({mq:1}, res);
@@ -79,13 +90,12 @@ app.post('/ggopnunda', function(req, res) {
 			
 			ggopnunda.refreshPlug(serial);
 			
-			if(0) { // 요청 결과 만약 해당 name을 가진 serial에 대해 command가 존재한다면
-				// 아래 코드 실행
-				if(deudnunda.command.operation == 'ON' || deudnunda.command.operation == 'OFF') {
-					res.send(deudnunda.command.operation + '\r');
-					console.log('Command to GGopnunda - TARGET : ' + deudnunda.command.target + " ACTION : " + deudnunda.command.operation);
+			command_db_model.find({serial : serial}, function(err, result) {
+				if(result.length> 0) {
+					res.send(result[0].command.operation + '\r');
+					console.log('Command to GGopnunda - TARGET : ' + result[0].command.target + " ACTION : " + result[0].command.operation);
 				}
-			}
+			});
 		}
 		else if(req == 'REGISTER') {
 			var new_plug = ggopnunda.makeInstance(chunk.MAC, chunk.IP, chunk.SERIAL);

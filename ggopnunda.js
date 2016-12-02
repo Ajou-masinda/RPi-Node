@@ -26,12 +26,6 @@ GGopnunda.prototype = {
 		"lastreq" : Date
 	},
 	
-	commandSchema : {
-		"command" : String,
-		"target" : String,
-		"time" : Date
-	},
-	
 	makeInstance : function(mac, ip, serial) {
 		var instance = {
 			name : "",
@@ -82,7 +76,6 @@ GGopnunda.prototype = {
 		var cur = new Date();
 		
 		var query = req_db_model.find({serial : serial}, function(err, result) {
-			console.log('refresh : ' + serial);
 			var ins = {serial : serial, lastreq : cur.getTime()};
 			
 			if(result.length > 0) {
@@ -125,18 +118,14 @@ GGopnunda.prototype = {
 		});
 	},
 
-	addPlug : function(new_data, serial) {
+	updatePlug : function(new_data) {
 		var db = this.db;
 		var plug_db_model = this.plug_db_model;
-		var query = plug_db_model.find({serial:plug.serial});
-		query.exec(function(err, result) {
-			console.log('Plug is added to Deudnunda');
-			
-			result[0].name = new_data.name;
-			result[0].locate = new_data.locate;
-			result[0].type = new_data.type;
-			
-			db.updateInstance(plug_db_model, result[0], result);
+		var query = plug_db_model.find({serial:new_data.serial}, function(err, result) {
+			if(result.length > 0) {
+				console.log('Plug is updated to Deudnunda');
+				db.updateInstance(plug_db_model, new_data, result);
+			}
 		});
 	},
 	

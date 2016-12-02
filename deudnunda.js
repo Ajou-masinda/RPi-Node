@@ -14,7 +14,7 @@ Deudnunda.prototype = {
 	/**
 	 * Start Deudnunda module
 	 */
-	run : function() {
+	run : function(db, ggopunuda_db, command_db) {
 		var self = this;
 		
 		this.py_nlp.on('message', function(message) {
@@ -34,6 +34,7 @@ Deudnunda.prototype = {
 			var command = self.makeCommand(key_morpheme);
 			console.log(command);
 			self.command = command;
+			self.reserveCommand(db, ggopunuda_db, command_db);
 		});
 	},
 	
@@ -102,6 +103,27 @@ Deudnunda.prototype = {
 		else {
 			return {"target" : target, "operation" : operation};
 		}
+	},
+	
+	reserveCommand : function(db, ggopnunda, command_db) {
+		var self = this;
+		ggopnunda.plug_db_model.find({name : this.command.target}, function(err, result) {
+			if(result.length > 0) {
+				var cur = new Date();
+				console.log(self.command);
+				db.addInstance(command_db, 
+					{
+						command : self.command,
+						target_serial : result[0].serial,
+						time : cur.getTime()
+					});
+				
+				console.log("New command reserved");
+			}
+			else {
+				console.log("There is no device such name");
+			}
+		});
 	}
 }
 
