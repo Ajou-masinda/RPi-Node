@@ -20,16 +20,19 @@ DBManager.prototype = {
 	},
 	
 	addInstance : function(Model, instance) {
-		var new_ins = new Model(instance);
-		
-		new_ins.save(function(err){
+		Model.create(instance, function(err, result) {
 			if(err) console.log('Mongoose : addInstance Error');
 		});
 	},
 
 	updateInstance : function(Model, instance, target) {
-		Model.findOneAndUpdate(target, instance, function(err){
-			if(err) console.log('Mongoose : updateInstance Error');
+		Model.findOne(target[0], function(err, result) {
+			result.serial = instance.serial;
+			result.lastreq = instance.lastreq;
+			
+			result.save(function(err) {
+				if(err) { console.log('Mongoose : updateInstance Error'); }
+			});
 		});
 	}
 }

@@ -80,7 +80,7 @@ Deudnunda.prototype = {
 	makeCommand : function(key_morpheme) {
 		var verb_map = {
 			"켜" : "ON", "키" : "ON",
-			"꺼" : "OFF", "꺼" : "OFF", "꺼주" : "OFF",
+			"꺼" : "OFF", "꺼" : "OFF", "꺼주" : "OFF", "꺼져" : "OFF",
 			"낮춰" : "DOWN",
 			"올려" : "UP"
 		};

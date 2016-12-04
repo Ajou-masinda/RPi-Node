@@ -53,7 +53,7 @@ app.post('/malhanda', function(req, res) {
 				ggopnunda.updatePlug(chunk.MSG);
 			}
 			else if(chunk.action == "DELETE") {
-				
+				ggopnunda.removePlug(chunk.MSG)
 			}
 		}
 		/*else if(typeof chunk.test !== 'undefined') {
@@ -90,10 +90,18 @@ app.post('/ggopnunda', function(req, res) {
 			
 			ggopnunda.refreshPlug(serial);
 			
-			command_db_model.find({serial : serial}, function(err, result) {
+			command_db_model.find({target_serial : serial}, function(err, result) {
 				if(result.length> 0) {
 					res.send(result[0].command.operation + '\r');
 					console.log('Command to GGopnunda - TARGET : ' + result[0].command.target + " ACTION : " + result[0].command.operation);
+					command_db_model.remove({target_serial : serial}, function(err, result) {});
+					
+					if(result[0].command.operation == 'ON') {
+						ggopnunda.updatePlug({status : 1});
+					}
+					else if(result[0].command.operation == 'OFF') {
+						ggopnunda.updatePlug({status : 0});
+					}
 				}
 			});
 		}
