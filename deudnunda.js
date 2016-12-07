@@ -82,7 +82,7 @@ Deudnunda.prototype = {
 			"켜" : "ON", "키" : "ON",
 			"꺼" : "OFF", "꺼" : "OFF", "꺼주" : "OFF", "꺼져" : "OFF",
 			"낮춰" : "DOWN", "맞춰" : "DOWN", "내려" : "DOWN",
-			"올려" : "UP"
+			"올려" : "UP", "높여" : "UP"
 		};
 		var target = "";
 		var motion = "";
@@ -120,6 +120,8 @@ Deudnunda.prototype = {
 			});
 		}
 		target = key_morpheme.noun[0];
+		
+		if(target == 'tv') target = '티비';
 		
 		if(typeof target == 'undefined' || operation == 'undefined') {
 			return {"target" : "error", "operation" : "error", "motion" : "error"};
