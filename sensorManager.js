@@ -45,7 +45,7 @@ SensorManager.prototype = {
 	},
 	
 	/**
-	 * Send warning notificaiton to Android
+	 * Send warning notification to Android
 	 */
 	sendNotification : function(mq, res) {
 		// Android Notification Code

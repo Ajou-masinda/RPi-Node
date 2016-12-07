@@ -165,12 +165,16 @@ GGopnunda.prototype = {
 				console.log('Plug is updated to Deudnunda');
 				//db.updateInstance(plug_db_model, new_data, result);
 				plug_db_model.findOne(result[0], function(err, result) {
-					result.name = new_data.name;
-					result.locate = new_data.locate;
-					result.type = new_data.type;
-					result.vendor = new_data.vendor;
-					if(typeof new_data.status !== 'undefined') result.status = new_data.status;
-					result.register = 1;
+					if(typeof new_data.status !== 'undefined') {
+						result.status = new_data.status;
+					}
+					else {
+						result.name = new_data.name;
+						result.locate = new_data.locate;
+						result.type = new_data.type;
+						result.vendor = new_data.vendor;
+						result.register = 1;
+					}
 					
 					result.save(function(err) {
 						if(err) { console.log('Mongoose : updateInstance Error'); }
