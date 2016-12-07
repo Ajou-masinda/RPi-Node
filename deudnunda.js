@@ -62,7 +62,7 @@ Deudnunda.prototype = {
 		
 		for(var i in parse_nlp) {
 			//if(parse_nlp[i].type == 'NNG') {
-			if(parse_nlp[i].type == 'Noun') {
+			if(parse_nlp[i].type == 'Noun' || (parse_nlp[i].type == 'Alpha' && parse_nlp[i].morpheme == 'tv')) {
 				target.push(parse_nlp[i].morpheme);
 			}
 			//else if(parse_nlp[i].type.indexOf('VV') >= 0 && verb === "") {
