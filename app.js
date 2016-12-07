@@ -20,7 +20,7 @@ var db = new DBManager();
 var ggopnunda = new GGopnunda(db);
 
 var commandSchema = {
-	"command" : { target : String, operation : String },
+	"command" : { target : String, operation : String, motion : String },
 	"target_serial" : String,
 	"time" : Date
 };
@@ -40,8 +40,20 @@ app.post('/malhanda', function(req, res) {
 		var req = chunk.REQ;
 		
 		if(req == 'COMMAND') {
+			var type = chunk.TYPE;
 			deudnunda = new Deudnunda('python_sources/malhandaNLP.py', chunk.MSG);
-			deudnunda.run(db, ggopnunda, command_db_model);
+			
+			if(type === 'TEXT') {
+				var motion = "";
+				if(typeof chunk.DEVICE !== 'undefined') {
+					motion = chunk.MOTION;
+				}
+				deudnunda.command = {"target" : chunk.NAME, "operation" : chunk.STATUS, "motion" : motion};
+				deudnunda.reserveCommand(db, ggopnunda, command_db_model);
+			}
+			else {
+				deudnunda.run(db, ggopnunda, command_db_model);
+			}
 		}
 		else if(req == 'GET') {
 			if(chunk.MSG == 'LIST') {
@@ -52,20 +64,12 @@ app.post('/malhanda', function(req, res) {
 			if(chunk.ACTION == "MODIFY") {
 				ggopnunda.updatePlug(chunk.MSG);
 			}
-			else if(chunk.action == "DELETE") {
+			else if(chunk.ACTION == "DELETE") {
 				ggopnunda.removePlug(chunk.MSG)
 			}
 		}
 		/*else if(typeof chunk.test !== 'undefined') {
 			sensor_manager.sendNotification({mq:1}, res);
-		}*/
-		/*else if(typeof chunk.AIRCON !== 'undefined') {
-			var exec = require('child_process').exec;
-			var child = exec('python ./python_sources/ir.py --device LG_AIR --command OFF',
-				function (error, stdout, stderr) {
-					console.log('stdout: ' + stdout);
-				}
-			);
 		}*/
 	});
 	
@@ -97,11 +101,43 @@ app.post('/ggopnunda', function(req, res) {
 					command_db_model.remove({target_serial : serial}, function(err, result) {});
 					
 					if(result[0].command.operation == 'ON') {
-						ggopnunda.updatePlug({status : 1});
+						ggopnunda.updatePlug({serial : serial, status : 1});
 					}
 					else if(result[0].command.operation == 'OFF') {
-						ggopnunda.updatePlug({status : 0});
+						ggopnunda.updatePlug({serial : serial, status : 0});
 					}
+					
+					ggopnunda.plug_db_model.find({serial : serial}, function(e, r) {
+						if(r[0].type > 0) {
+							var vendor = "";
+							var device = "";
+							
+							if(r[0].vendor == 1) {
+								vendor = "LG";
+							}
+							else if(r[0].vendor == 2){
+								vendor = "SAMSUNG";
+							}
+							
+							if(r[0].type == 1) {
+								device = "AIR";
+							}
+							else if(r[0].type == 2) {
+								device = "TV";
+							}
+							
+							var com = result[0].command.motion;
+							
+							console.log('IR : ' + 'python ./python_sources/ir.py --device ' + vendor + '_' + device + ' --command ' + com);
+							
+							var exec = require('child_process').exec;
+							var child = exec('python ./python_sources/ir.py --device ' + vendor + '_' + device + ' --command ' + com,
+								function (error, stdout, stderr) {
+									console.log('stdout: ' + stdout);
+								}
+							);
+						}
+					});
 				}
 			});
 		}

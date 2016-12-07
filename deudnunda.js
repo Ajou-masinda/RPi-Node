@@ -31,7 +31,7 @@ Deudnunda.prototype = {
 			console.log('--NLP finished--');
 			
 			var key_morpheme = self.getKeyMorpheme(self.parse_nlp);
-			var command = self.makeCommand(key_morpheme);
+			var command = self.makeCommand(key_morpheme, ggopunuda_db);
 			console.log(command);
 			self.command = command;
 			self.reserveCommand(db, ggopunuda_db, command_db);
@@ -77,31 +77,55 @@ Deudnunda.prototype = {
 	/**
 	 * Make command for GGopnunda
 	 */
-	makeCommand : function(key_morpheme) {
+	makeCommand : function(key_morpheme, ggopunuda_db) {
 		var verb_map = {
 			"켜" : "ON", "키" : "ON",
 			"꺼" : "OFF", "꺼" : "OFF", "꺼주" : "OFF", "꺼져" : "OFF",
-			"낮춰" : "DOWN",
+			"낮춰" : "DOWN", "맞춰" : "DOWN", "내려" : "DOWN",
 			"올려" : "UP"
 		};
 		var target = "";
+		var motion = "";
 		var operation = verb_map[key_morpheme.verb];
 		
-		// if(key_morpheme.target.length > 1)
-		// morpheme이 여러개라면 DB에 target의 이름이 있는지 확인
-		// var get_plugs_from_db = [];
-		// for(var i in key_morpheme.target) {
-		// 		if( in_array(get_plugs_from_db, key_morpheme.target[i]) )
-		// 			target = key_morpheme.target[i];
-		// else
+		if(operation == "ON" || operation == "OFF") {
+			motion = "POWER";
+		}
+		
+		if((key_morpheme.noun).length > 1) {
+			// morpheme이 여러개라면 DB에 target의 이름이 있는지 확인
+			/*var get_plugs_from_db = [];
+			ggopunuda_db.plug_db_model.find({}, function(err, result) {
+				console.log(result);
+				result.forEach(function(plug) {
+					console.log(plug);
+					get_plugs_from_db.push(plug.name);
+				});
+				
+				(key_morpheme.noun).forEach(function(noun) {
+					console.log(get_plugs_from_db.indexOf(noun));
+					if(get_plugs_from_db.indexOf(noun) > -1) {
+						target = noun;
+						return false;
+					}
+				});
+			});*/
+			(key_morpheme.noun).forEach(function(noun) {
+				if(noun == "볼륨" || noun == "소리") {
+					motion = "VOLUME" + operation;
+				}
+				else if(noun == "채널") {
+					motion = "CHANNEL" + operation;
+				}
+			});
+		}
 		target = key_morpheme.noun[0];
 		
-		
 		if(typeof target == 'undefined' || operation == 'undefined') {
-			return {"target" : "error", "operation" : "error"};
+			return {"target" : "error", "operation" : "error", "motion" : "error"};
 		}
 		else {
-			return {"target" : target, "operation" : operation};
+			return {"target" : target, "operation" : operation, "motion" : motion};
 		}
 	},
 	

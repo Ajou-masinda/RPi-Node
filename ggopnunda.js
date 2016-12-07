@@ -174,6 +174,7 @@ GGopnunda.prototype = {
 						result.type = new_data.type;
 						result.vendor = new_data.vendor;
 						result.register = 1;
+						result.status = 0;
 					}
 					
 					result.save(function(err) {
@@ -198,7 +199,6 @@ GGopnunda.prototype = {
 					result.vendor = -1;
 					result.status = -1;
 					result.register = -1;
-					result.detect = -1
 					
 					result.save(function(err) {
 						if(err) { console.log('Mongoose : updateInstance Error'); }
