@@ -45,7 +45,7 @@ var test = function(iter, test_set) {
 			 {"morpheme" : "줘","type" : "VX+EC"} ]
 			];
 			*/
-			
+
 			// Twitter result
 			var expect = [
   			[ {"morpheme" : "티비","type" : "Noun"}, {"morpheme" : "켜","type" : "Verb"},{"morpheme" : "줘","type" : "Eomi"} ],
@@ -84,9 +84,9 @@ var test = function(iter, test_set) {
 	var test_makeCommand = function(deudnunda) {
 		it('makeCommand() method', function() {
 			var expect = [
-			{"target" : "티비","operation" : "ON"},
-			{"target" : "전등","operation" : "OFF"},
-			{"target" : "에어컨","operation" : "DOWN"}
+			{"target" : "티비","operation" : "ON","motion":"POWER"},
+			{"target" : "전등","operation" : "OFF","motion":"POWER"},
+			{"target" : "에어컨","operation" : "DOWN","motion":""}
 			];
 			
 			var key_mor = deudnunda.getKeyMorpheme(deudnunda.splitPythonList());
